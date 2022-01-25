@@ -1,0 +1,142 @@
+/* Copyright (C) 2020-2021 Aditya Shakya <adi1090x@gmail.com> */
+/* Everyone is permitted to copy and distribute copies of this file under GNU-GPL3 */
+
+configuration {
+    font:							"Segoe UI Variable Static Text 11";
+    show-icons:                     true;
+    display-drun: 					"";
+    drun-display-format:            "{icon} {name}";
+    disable-history:                false;
+	click-to-exit: 					true;
+}
+
+@import "colors.rasi"
+
+window {
+    transparency:                   "real";
+    background-color:               @bg;
+    text-color:                     @fg;
+    width:                          500px;
+    location:                       center;
+    anchor:                         center;
+    x-offset:                       0;
+    y-offset:                       0;
+}
+
+prompt {
+    enabled: 						true;
+    margin:                         0px 0px 0px 8px;
+	padding: 						6px 12px 6px 12px;
+    border-radius:                  12;
+	background-color: 				@at;
+	text-color: 					@ac;
+}
+
+textbox-prompt-colon {
+	expand: 						false;
+	str: 							"直";
+    background-color:               @al;
+    text-color:                     @fg;
+    padding:                        5px 0px 0px 6px;
+	font:							"Iosevka Nerd Font 13";   
+}
+
+entry {
+    background-color:               @al;
+    text-color:                     @fg;
+    placeholder-color:              @fg;
+    expand:                         true;
+    horizontal-align:               0;
+    placeholder:                    "";
+    blink:                          true;
+    margin:                         2px 0px 0px 8px;
+    padding:                        4px 0px 0px 0px;
+}
+
+inputbar {
+	children: 						[ textbox-prompt-colon, prompt, entry ];
+    background-color:               @al;
+    text-color:                     @fg;
+    expand:                         false;
+    padding:    					6px 0px 6px 12px; 
+    position:                       center;
+}
+
+case-indicator {
+    background-color:               @al;
+    text-color:                     @fg;
+    spacing:                        0;
+}
+
+
+listview {
+    background-color:               @al;
+    columns:                        1;
+    lines:							8;
+    spacing:                        4px;
+    cycle:                          false;
+    dynamic:                        true;
+    layout:                         vertical;
+    padding: 						5px 5px 0px 5px;
+}
+
+mainbox {
+    background-color:               @al;
+    children:                       [ inputbar, listview ];
+    spacing:                        5px;
+    padding:                        5px 5px 5px 5px;
+}
+
+element {
+    background-color:               @al;
+    text-color:                     @fg;
+    orientation:                    horizontal;
+    border-radius:                  12;
+    padding:                        6px 6px 6px 6px;
+}
+
+element-icon {
+    background-color:               @al;
+    text-color:       				inherit;
+    horizontal-align:               0.5;
+    vertical-align:                 0.5;
+    size:                           0px;
+    border:                         0px;
+}
+
+element-text {
+    background-color:               @al;
+    text-color:       				inherit;
+    expand:                         true;
+    horizontal-align:               0;
+    vertical-align:                 0;
+    margin:                         2px 0px 2px 2px;
+}
+
+element normal.urgent,
+element alternate.urgent {
+    background-color:               @al;
+    text-color:                     @fg;
+    border-radius:                  12;
+}
+
+element normal.active,
+element alternate.active {
+    background-color:               #03F42B;
+    text-color:                     @bg;
+}
+
+element selected {
+    background-color:               @se;
+    text-color:                     @fg;
+}
+
+element selected.urgent {
+    background-color:               #F49403;
+    text-color:                     @bg;
+}
+
+element selected.active {
+     background-color:               #F49403;
+    color:                          @bg;
+}

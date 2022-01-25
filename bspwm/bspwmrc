@@ -1,0 +1,93 @@
+#! /bin/sh
+
+xrdb ~/.Xresources
+getColors() {
+	BG=$(xrdb -query | grep '*.dunst-bg:'| awk '{print $NF}')
+	FG=$(xrdb -query | grep '*.foreground:'| awk '{print $NF}')
+	CRITICAL=$(xrdb -query | grep '*.dunst-critical:'| awk '{print $NF}')
+	BORDER_FOCUSED=$(xrdb -query | grep '*.bsp-border-focused:'| awk '{print $NF}')
+	BORDER_NORMAL=$(xrdb -query | grep '*.bsp-border-normal:'| awk '{print $NF}')
+	BORDER_ACTIVE=$(xrdb -query | grep '*.bsp-border-active:'| awk '{print $NF}')
+	BORDER_FEEDBACK=$(xrdb -query | grep '*.bsp-border-feedback:'| awk '{print $NF}')
+}
+getColors
+
+## Display configs
+if xrandr -q | grep 'HDMI-1-1 connected' ; then
+	autorandr --load docked
+	bspc monitor eDP-1-1 -d I II III IV
+	bspc monitor HDMI-1-1 -d V VI VII VIII
+	
+else
+	autorandr --load undocked
+	bspc monitor eDP-1-1 -d I II III IV V VI VII VIII
+fi
+
+# Terminate already running bar instances
+killall -q polybar
+
+# Wait until the processes have been shut down
+while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+
+# Launch polybar
+
+if xrandr -q | grep 'HDMI-1-1 connected' ; then
+	polybar main -c ~/.config/polybar/config &
+	polybar main_extend -c ~/.config/polybar/config &
+else
+	polybar main_nbk -c ~/.config/polybar/config &
+fi
+
+bspc config border_width 1
+bspc config window_gap 7
+bspc config split_ratio 0.50
+
+bspc config borderless_monocle  true
+bspc config gapless_monocle		false
+bspc config single_monocle 		true
+
+bspc config focused_border_color "$BORDER_FOCUSED" 
+bspc config normal_border_color "$BORDER_NORMAL"
+bspc config active_border_color "$BORDER_ACTIVE"
+bspc config presel_feedback_color "$BORDER_FEEDBACK"
+
+
+bspc rule -r *:*
+
+
+bspc rule -a Nitrogen desktop='^8' state=floating follow=on focus=on
+bspc rule -a Pick-colour-picker state=floating follow=on focus=on
+bspc rule -a Gdebi-gtk state=floating follow=on focus=on
+bspc rule -a Pavucontrol state=floating follow=on focus=on
+bspc rule -a Gnome-calculator state=floating follow=on focus=on
+bspc rule -a Peek state=floating follow=on focus=on
+bspc rule -a Code state=monocle follow=on focus=on
+bspc rule -a Yad state=floating follow=on focus=on
+
+
+nitrogen --restore &
+
+/usr/bin/numlockx on
+/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+
+# Kill if already running
+killall -9 sxhkd dunst compton picom
+#picom
+
+sxhkd &
+clipmenud &
+flameshot &
+# compton --config ~/.config/compton.conf &
+picom &
+
+dunst \
+-geom "320x50-10+52" -frame_width "1" -font "Segoe UI Variable Static Text 16" \
+-lb "$BG" -lf "$FG" -lfr "$BG" \
+-nb "$BG" -nf "$FG" -nfr "$BG" \
+-cb "$BG" -cf "$CRITICAL" -cfr "$CRITICAL" &
+
+xsetroot -cursor_name left_ptr
+
+# Enable Super Keys For Menu
+ksuperkey -e 'Super_L=Alt_L|F1' &
+ksuperkey -e 'Super_R=Alt_L|F1' &

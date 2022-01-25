@@ -1,0 +1,93 @@
+/*
+ *
+ * Author  : Aditya Shakya
+ * Mail    : adi1090x@gmail.com
+ * Github  : @adi1090x
+ * Twitter : @adi1090x
+ *
+ */
+
+configuration {
+    show-icons:                     false;
+    disable-history:                false;
+	sidebar-mode: 					false;
+}
+
+@import "colors.rasi"
+
+* {
+    background-color:               @bg;
+    text-color:                     @fg;
+}
+
+window {
+    transparency:                   "real";
+    border-radius:                  0;
+    width:                          100px;
+    location:                       east;
+    x-offset:                       -15px;
+    y-offset:                       0px;
+}
+
+listview {
+    background-color:               @al;
+    lines:							5;
+    margin:                         8px;
+    spacing:                        8px;
+    cycle:                          true;
+    dynamic:                        true;
+    layout:                         vertical;
+}
+
+mainbox {
+    background-color:               @al;
+    children:                       [ listview ];
+}
+
+element {
+    background-color:               @bg2;
+    text-color:                     @fg;
+    orientation:                    vertical;
+    border-radius:                  12;
+}
+
+element-text {
+    background-color: 				@al;
+    text-color:       				inherit;
+	font:							"feather 20";
+    expand:                         true;
+    horizontal-align:               0.5;
+    vertical-align:                 0.5;
+    margin:                         26px 26px 26px 26px;
+}
+
+element normal.urgent,
+element alternate.urgent {
+    background-color:               @urgent;
+    text-color:                     @fg;
+    border-radius:                  12;
+}
+
+element normal.active,
+element alternate.active {
+    background-color:               @bg-alt;
+    text-color:                     @fg;
+}
+
+element selected {
+    background-color:               @se;
+    text-color:                     @ac;
+    border:                  		0px;
+    border-radius:                  12;
+    border-color:                  	@border;
+}
+
+element selected.urgent {
+    background-color:               @urgent;
+    text-color:                     @fg;
+}
+
+element selected.active {
+    background-color:               @bg-alt;
+    color:                          @fg;
+}
