@@ -1,0 +1,25 @@
+*.bsp-border-focused: #0F0F0F
+*.bsp-border-normal: #0F0F0F
+*.bsp-border-active: #0F0F0F
+*.bsp-border-feedback: #03F42B
+
+*.foreground: #ffffff
+*.background-primary: #0F0F0F
+*.background-secondary: #212121
+*.accent: #3281EA
+
+
+*.rofi-bg: #0F0F0Faa
+*.rofi-bg2: #272727aa
+*.rofi-select-normal: #ffffff20
+*.rofi-select-active: #3281EA40
+
+*.module-cpu: #e173ff
+*.module-mem: #fff200
+*.module-gpu: #ff695e
+
+*.module-wlan-active: #03F42B
+*.module-wlan-inactive: #ff695e
+
+*.dunst-bg: #0F0F0Faa
+*.dunst-critical: #D46389
