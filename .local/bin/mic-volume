@@ -1,0 +1,99 @@
+#!/bin/sh
+
+DEFAULT_SOURCE_INDEX=$(pacmd list-sources | grep "\* index:" | cut -d' ' -f5)
+
+display_volume_label() {
+	if [ -z "$volume" ]; then
+	  echo "No Mic Found"
+	else
+	  if [[ "$mute" == *"yes"* ]]; then
+	    echo " MUTE"
+	  elif [[ "$mute" == *"no"* ]]; then
+	    echo " $volume"
+	  else
+	    echo "$volume !"
+	  fi
+	fi
+}
+
+is_muted(){
+	if [ -z "$volume" ]; then
+	  echo "No Mic Found"
+	else
+	  if [[ "$mute" == *"yes"* ]]; then
+	    echo "Mute"
+	  elif [[ "$mute" == *"no"* ]]; then
+	    echo "Unmute"
+	  else
+	    echo "$volume !"
+	  fi
+	fi
+}
+
+get_volume(){
+	echo "$(pacmd list-sources | grep "index: $DEFAULT_SOURCE_INDEX" -A 7 | grep "volume" | awk -F/ '{sub("  ",""); print $2}')"
+}
+
+get_icon() {
+	current= echo $get_volume | sed 's/[^0-9]*//g'
+	icon='~/.config/dunst/icons/microphone.png'
+	#if [[ "$current" -eq "0" ]]; then
+	#	icon='~/.config/dunst/icons/volume-mute.png'
+	#elif [[ ("$current" -ge "0") && ("$current" -le "30") ]]; then
+	#	icon='~/.config/dunst/icons/volume-low.png'	
+	#elif [[ ("$current" -ge "30") && ("$current" -le "60") ]]; then
+	#	icon='~/.config/dunst/icons/volume-mid.png'
+	#elif [[ ("$current" -ge "60") && ("$current" -le "100") ]]; then
+	#	icon='~/.config/dunst/icons/volume-high.png'
+	#fi
+}
+
+case $1 in
+	"show-vol")
+		if [ -z "$2" ]; then
+  			volume=$(pacmd list-sources | grep "index: $DEFAULT_SOURCE_INDEX" -A 7 | grep "volume" | awk -F/ '{sub("  ",""); print $2}')
+  			mute=$(pacmd list-sources | grep "index: $DEFAULT_SOURCE_INDEX" -A 11 | grep "muted")
+			display_volume_label
+		else
+  			volume=$(pacmd list-sources | grep "$2" -A 6 | grep "volume" | awk -F/ '{sub("  ",""); print $2}')
+  			mute=$(pacmd list-sources | grep "$2" -A 11 | grep "muted" )
+			display_volume_label
+		fi
+		;;
+	"inc-vol")
+		if [ -z "$2" ]; then
+			pactl set-source-volume $DEFAULT_SOURCE_INDEX +7% && get_icon && dunstify -u low --replace=69 -i "$icon" "Sensitivity : $(get_volume)"
+		else
+			pactl set-source-volume $2 +7% && get_icon && dunstify -u low --replace=69 -i "$icon" "Sensitivity : $(get_volume)"
+		fi
+		;;
+	"dec-vol")
+		if [ -z "$2" ]; then
+			pactl set-source-volume $DEFAULT_SOURCE_INDEX -7% && get_icon && dunstify -u low --replace=69 -i "$icon" "Sensitivity : $(get_volume)"
+		else
+			pactl set-source-volume $2 -7% && get_icon && dunstify -u low --replace=69 -i "$icon" "Sensitivity : $(get_volume)"
+		fi
+		;;
+	"mute-vol")
+		
+		if [ -z "$2" ]; then
+			pactl set-source-mute $DEFAULT_SOURCE_INDEX toggle && get_icon
+			volume=$(pacmd list-sources | grep "index: $DEFAULT_SOURCE_INDEX" -A 7 | grep "volume" | awk -F/ '{sub("  ",""); print $2}')
+			mute=$(pacmd list-sources | grep "index: $DEFAULT_SOURCE_INDEX" -A 11 | grep "muted")
+			is_muted
+			dunstify -u low --replace=69 -i "$icon" "$(is_muted)"
+			
+		else
+			pactl set-source-mute $2 toggle && get_icon
+			volume=$(pacmd list-sources | grep "$2" -A 6 | grep "volume" | awk -F/ '{sub("  ",""); print $2}')
+			mute=$(pacmd list-sources | grep "$2" -A 11 | grep "muted" )
+			is_muted
+			dunstify -u low --replace=69 -i "$icon" "$(is_muted)"
+			
+		fi
+		;;
+	*)
+		echo "Invalid script option"
+		;;
+esac
+
